@@ -1,0 +1,26 @@
+{
+  "name": "fisphish",
+  "version": "1.0.0",
+  "description": "Consolidated threat intelligence blocklist for Discord scams, Web3 crypto drainers, and malicious domains",
+  "type": "module",
+  "main": "src/build.ts",
+  "scripts": {
+    "build": "tsx src/build.ts"
+  },
+  "keywords": [
+    "phishing",
+    "blocklist",
+    "threat-intelligence",
+    "crypto-drainer",
+    "discord-scams",
+    "adlist",
+    "pihole"
+  ],
+  "author": "fisventurous (https://github.com/fisventurous)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
