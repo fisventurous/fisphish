@@ -144,6 +144,28 @@ export async function buildDataset(): Promise<void> {
   console.log(`Whitelist populated with ${officialSet.size} high-reputation and official domains.`);
 
   const domainMap = new Map<string, string>();
+  let previousTotal = 0;
+
+  // Pre-seed from existing data/all.json so known threats are never lost if an upstream vendor prunes or goes down
+  const allJsonPath = resolve(DATA_DIR, 'all.json');
+  if (existsSync(allJsonPath)) {
+    try {
+      const existing = JSON.parse(readFileSync(allJsonPath, 'utf8'));
+      for (const [cat, list] of Object.entries(existing)) {
+        if (Array.isArray(list)) {
+          for (const d of list) {
+            if (d && typeof d === 'string') {
+              domainMap.set(d.toLowerCase(), cat);
+              previousTotal++;
+            }
+          }
+        }
+      }
+      console.log(`Pre-seeded ${domainMap.size} existing domains from current database.`);
+    } catch (err) {
+      console.warn('Could not read existing all.json, starting fresh:', err);
+    }
+  }
 
   for (const source of SOURCES) {
     console.log(`Fetching from ${source.name}...`);
@@ -222,6 +244,24 @@ export async function buildDataset(): Promise<void> {
     }
   }
 
+  // Scrub any domain matching the latest whitelist
+  let scrubbedCount = 0;
+  for (const domain of domainMap.keys()) {
+    if (isDomainWhitelisted(domain, officialSet)) {
+      domainMap.delete(domain);
+      scrubbedCount++;
+    }
+  }
+  if (scrubbedCount > 0) {
+    console.log(`Purged ${scrubbedCount} whitelisted/official domains from threat list.`);
+  }
+
+  // Safety guard: ensure the database never drops significantly due to corrupted upstream feeds
+  if (previousTotal > 0 && domainMap.size < (previousTotal - scrubbedCount)) {
+    console.error(`Safety guard triggered: new domain count (${domainMap.size}) is lower than existing count (${previousTotal}). Aborting build to preserve dataset.`);
+    process.exit(1);
+  }
+
   const grouped: Record<string, string[]> = {
     'crypto-drainer': [],
     'discord-nitro': [],
@@ -245,7 +285,6 @@ export async function buildDataset(): Promise<void> {
   }
 
   // 1. Grouped JSON (all.json)
-  const allJsonPath = resolve(DATA_DIR, 'all.json');
   writeFileSync(allJsonPath, JSON.stringify(grouped, null, 2), 'utf8');
 
   // 2. Flat all domains list (domains.txt)
