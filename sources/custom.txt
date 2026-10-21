@@ -1,0 +1,2 @@
+# fisphish verified custom entries
+# one domain per line. lines starting with # are ignored.

@@ -1270,7 +1270,6 @@
 119.189.146.15
 119.192.128.163
 119.193.158.215
-119.206.216.132
 119.91.141.214
 11923-coinbase.com
 119512-coinbase.com
@@ -1296,6 +1295,7 @@
 120.79.64.164
 120.84.212.234
 120.84.213.44
+120.84.214.178
 120.84.214.210
 120.84.215.56
 121.1.138.245
@@ -1340,10 +1340,8 @@
 123.129.155.110
 123.129.7.76
 123.14.210.153
-123.14.233.91
 123.14.87.109
 123.143.141.75
-123.161.90.221
 123.170.101.120
 123.188.126.2
 123.189.133.36
@@ -1470,7 +1468,6 @@
 136btc.com
 137-184-89-213.cprapid.com
 138-197-30-74.cprapid.com
-138.122.43.76
 138.204.196.254
 138.219.58.34
 138.36.2.110
@@ -1571,7 +1568,6 @@
 154.126.186.59
 154.223.128.222
 154.23.0.6
-154.68.30.214
 154.73.64.24
 154.83.85.63
 154.84.212.18
@@ -1631,7 +1627,6 @@
 162782-coinbase.com
 162814-coinbase.com
 16293884-coinbase.com
-163.142.77.44
 163.142.93.136
 163buffmarket.com
 163not.online
@@ -1742,7 +1737,6 @@
 175.147.243.123
 175.148.207.181
 175.149.142.240
-175.149.73.133
 175.151.226.239
 175.151.87.39
 175.165.74.103
@@ -1895,6 +1889,7 @@
 182.253.115.155
 182.253.115.156
 182.52.51.239
+182.72.167.124
 182.73.129.30
 182.92.99.95
 182.93.83.124
@@ -3389,6 +3384,7 @@
 213.33.204.186
 213.47.243.57
 213.5.194.56
+213.6.101.83
 213.6.196.230
 213.6.74.138
 213.64.230.238
@@ -3491,6 +3487,7 @@
 23-stark.net
 23-zksync.com
 23.140.244.57
+23.160.56.123
 23.238.39.247
 23.254.240.199
 23.94.145.112
@@ -3571,6 +3568,7 @@
 24.191.64.49
 24.234.159.5
 24.37.71.230
+24.75.165.67
 240tdu.top
 24234234234.ru
 24315344-coinbase.com
@@ -4211,7 +4209,6 @@
 37.233.63.185
 37.252.66.188
 37.252.69.10
-37.28.177.69
 37.34.230.9
 37.57.33.51
 3707nmerrimaccircle.com
@@ -4776,6 +4773,7 @@
 47.76.159.198
 47.84.123.75
 47.89.173.214
+47.92.205.158
 4729-coinbase.com
 472911-coinbase.com
 472988-coinbase.com
@@ -5244,7 +5242,6 @@
 59.110.9.189
 59.56.110.227
 59.96.139.185
-59.97.249.88
 5906743316.pages.dev
 591419-gemini.com
 591e139d21d79ee4cb8.asalbez.es
@@ -6170,6 +6167,7 @@
 76-reallocate-flare.pages.dev
 76.130.209.104
 76.53.38.126
+76.76.195.174
 76.94.199.139
 76214-coinbase.com
 762ab162a853.remixsolidity.com
@@ -6251,7 +6249,6 @@
 78zz8.demonmetale.xyz
 79-reallocate-flare.pages.dev
 79.1.229.42
-79.106.74.163
 79.124.8.44
 79.137.202.34.sslip.io
 790d5e17-d669-430d-96d1-5ec52fedcca6.infrzred.financial
@@ -6912,6 +6909,7 @@
 91mijian.com
 91yk7y4.tinaninternational.com
 92-reallocate-flare.pages.dev
+92.118.39.62
 92.127.156.174
 92.150.82.148
 92.203.169.41
@@ -48250,7 +48248,6 @@ automigration.dev
 automigrationbot.dev
 autominter.cfd
 autommbkub.1gb.ru
-automobile-bk.de
 automodule-net.pages.dev
 auton-olas.top
 autonclas.com
@@ -127345,7 +127342,6 @@ dcsordse-drops.gq
 dctraded.cc
 dctwallte.com
 dcverifybot.xyz
-dcwblida.dz
 dcwww.secure.lawlessmarksman.com
 dcx.finance
 dcxchain.com
@@ -142398,6 +142394,7 @@ dl-octusbridge.com
 dl.1003b.56a.com
 dl.360safe.com
 dl.dzqzd.com
+dl.ijinshan.com
 dl.natgo.cn
 dl.twitter-eventt22.com
 dl1sx2u6fqif9pk.makeup
@@ -224170,7 +224167,6 @@ lagtc0i.info
 laguarda.com.ec
 lahissilv.net
 lahja-kampanjatapahtumat.online
-lahoreshoes.com
 lahypesquad.com
 lai-1451610695.cos.ap-guangzhou.myqcloud.com
 laiclaim.pages.dev
@@ -235248,6 +235244,7 @@ loan.saltlending.org
 loan.ton-gp.me
 loan2h64lcvf86k.xyz
 loanlala.in
+loanoffer.co.in
 loans.tmetamask.com
 loapi.blogspot.com
 loavax.com
@@ -241706,6 +241703,7 @@ main.etherranking.io
 main.feereturn.co
 main.fetch-merge.net
 main.kpaper.xyz
+main.lahoreshoes.com
 main.liquityfi.org
 main.llayer3.xyz
 main.multi-dappschain.xyz
@@ -243068,7 +243066,6 @@ manchainformacion.com
 manda-network.com
 mandala-regens-season-1.netlify.app
 mandala95.com
-mandarin.net.au
 mandarite.pages.dev
 mandariteondev.live
 mandatescheme.com
@@ -302409,7 +302406,6 @@ ousdtoken.top
 ousdtoken.xyz
 oushagix.com
 ousidsg.xyz
-out-agent.duckdns.org
 out-buy.online
 out-krnl.com
 out.fund
@@ -327016,7 +327012,6 @@ pub-04d374bc3c5846c5b2be121fb89a8304.r2.dev
 pub-07de391a022d4da1becd7ab6f6ac5b08.r2.dev
 pub-0885644111934ac09acb1723c5cefe26.r2.dev
 pub-0a765cdddf3b414b99a931786a0335bc.r2.dev
-pub-0aa1ca9c603a4b99b4e4dd7636b31f10.r2.dev
 pub-0ac30147b2134ca1bb1503e202f2db45.r2.dev
 pub-0b103ef0edde4505a41fa18159f2b985.r2.dev
 pub-0c9c7c78acfb4e32bc0be538adcc38b9.r2.dev
@@ -335218,6 +335213,7 @@ ratepvxzieny111.net
 ratestoll-407.com
 rathbonesinvestment.com
 rathbun.pages.dev
+rathodsoftware.in
 ratification-tool.online
 ratifyswiftverseapp.pages.dev
 ratifyswiftverseeapp.pages.dev
@@ -381070,7 +381066,6 @@ spex-truspad.com
 spexdao.com
 spexygame.com
 spg639.com
-spgint.com
 spgzed.cc
 spgzeds.com
 sphctin.com
@@ -400772,6 +400767,7 @@ steps-zora.co
 steps.events
 stepsapp.pages.dev
 stepstaking.app
+stepupnetworks.com
 stepvaultx.com
 steqmcammunity.ru
 steqmcammuniyty.ru
@@ -418049,7 +418045,6 @@ thetalabs-mainet.online
 thetalabs.online
 thetalib.com
 thetamainnetaccess.org
-thetamarindleafresidency.com
 thetanarena.cloud
 thetanarena.net
 thetanarena.org

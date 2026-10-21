@@ -1,0 +1,37 @@
+name: Report Malicious Domain
+description: Submit a new phishing link, crypto drainer, or token grabber for verification.
+title: "[Report]: "
+labels: ["needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting. Submissions are automatically validated against whitelist protection and duplicate filters before review.
+  - type: input
+    id: domain
+    attributes:
+      label: Malicious Domain or URL
+      description: The exact domain or link (e.g. `scam-discord-nitro.xyz` or `https://wallet-drainer.click/claim`).
+      placeholder: example.com
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Threat Category
+      options:
+        - Crypto Drainer / Fake Airdrop
+        - Discord Nitro / Token Grabber
+        - Steam Trade / Skin Fraud
+        - Casino / Gambling Fraud
+        - General Phishing / Malware
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context or Proof (Optional)
+      description: Where was this link encountered? (e.g. unsolicited Discord DM, fake bot invite).
+      placeholder: Sent via Discord DM claiming to offer free Nitro rewards.
+    validations:
+      required: false

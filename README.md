@@ -58,9 +58,13 @@ Add the raw `domains.txt` link directly to your adlists:
 https://raw.githubusercontent.com/fisventurous/fisphish/main/data/domains.txt
 ```
 
-## Local Build
+## Submitting Zero-Day Domains
 
-If you want to run the pipeline manually or compile custom feeds:
+Spotted an unlisted scam or wallet drainer? Submit it through our [Domain Report form](https://github.com/fisventurous/fisphish/issues/new?template=report.yml).
+
+Submissions undergo automated pre-checks (duplicate verification, whitelist protection, and syntax validation) before being queued for maintainer review.
+
+## Local Build
 
 ```bash
 git clone https://github.com/fisventurous/fisphish.git

@@ -1,10 +1,11 @@
-import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = resolve(__dirname, '..');
 const DATA_DIR = resolve(ROOT_DIR, 'data');
+const SOURCES_DIR = resolve(ROOT_DIR, 'sources');
 
 interface SourceDef {
   name: string;
@@ -130,6 +131,41 @@ export async function buildDataset(): Promise<void> {
       }
     } catch (err) {
       console.warn(`Error processing ${source.name}:`, err);
+    }
+  }
+
+  // Ingest verified local custom sources
+  const customFilePath = resolve(SOURCES_DIR, 'custom.txt');
+  if (existsSync(customFilePath)) {
+    console.log('Ingesting local verified custom domains...');
+    const customText = readFileSync(customFilePath, 'utf8');
+    for (const raw of customText.split('\n')) {
+      let d = raw.toLowerCase().trim()
+        .replace(/^https?:\/\//, '')
+        .replace(/^www\./, '')
+        .split('/')[0]!
+        .split(':')[0]!;
+
+      if (!d || !d.includes('.') || d.length > 120 || d.startsWith('.') || d.startsWith('#')) continue;
+      if (!/^[a-z0-9][a-z0-9.-]*[a-z0-9]$/.test(d)) continue;
+
+      let isOfficial = officialSet.has(d);
+      if (!isOfficial) {
+        const parts = d.split('.');
+        for (let i = 1; i < parts.length - 1; i++) {
+          if (officialSet.has(parts.slice(i).join('.'))) {
+            isOfficial = true;
+            break;
+          }
+        }
+      }
+      if (isOfficial) continue;
+
+      const cat = categorizeDomain(d, 'phishing-general');
+      const existing = domainMap.get(d);
+      if (!existing || (existing === 'phishing-general' && cat !== 'phishing-general')) {
+        domainMap.set(d, cat);
+      }
     }
   }
 

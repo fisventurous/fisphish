@@ -1,0 +1,185 @@
+name: Ingest Domain Submission
+
+on:
+  issues:
+    types: [opened, labeled]
+
+concurrency:
+  group: ingest-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  validate-submission:
+    if: github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate domain submission
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body || '';
+            const match = body.match(/### Malicious Domain or URL\s+([^\r\n]+)/i);
+            const rawDomain = match ? match[1].trim() : '';
+
+            const clean = rawDomain.toLowerCase()
+              .replace(/^https?:\/\//, '')
+              .replace(/^www\./, '')
+              .split('/')[0]
+              .split(':')[0]
+              .trim();
+
+            const isValid = /^[a-z0-9][a-z0-9.-]*[a-z0-9]$/.test(clean) && clean.includes('.');
+            if (!isValid) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                body: `❌ **Submission Rejected**: \`${rawDomain}\` is not a valid domain format.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+              return;
+            }
+
+            const fs = require('fs');
+            const domainsTxt = fs.readFileSync('data/domains.txt', 'utf8');
+            if (domainsTxt.includes('\n' + clean + '\n') || domainsTxt.startsWith(clean + '\n')) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                body: `ℹ️ **Duplicate**: \`${clean}\` is already present in the blocklist.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+              return;
+            }
+
+            const protectedHosts = [
+              'github.com', 'google.com', 'youtube.com', 'twitter.com', 'x.com',
+              'discord.com', 'discord.gg', 'steamcommunity.com', 'pollinations.ai',
+              'cloudflare.com', 'microsoft.com', 'apple.com', 'amazon.com', 'vercel.app'
+            ];
+
+            const isProtected = protectedHosts.some(h => clean === h || clean.endsWith('.' + h));
+            if (isProtected) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                body: `🛡️ **Whitelisted**: \`${clean}\` is an official or protected platform and cannot be blacklisted.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `✅ **Automated pre-checks passed** for \`${clean}\`.\n\nMaintainers can review and apply the \`approved\` label to ingest this into the live dataset.`
+            });
+
+  ingest-approved:
+    if: github.event.action == 'labeled' && github.event.label.name == 'approved'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: Verify maintainer authorization
+        id: auth
+        run: |
+          AUTHOR="${{ github.event.sender.login }}"
+          ASSOCIATION="${{ github.event.issue.author_association }}"
+          if [ "$AUTHOR" = "fisventurous" ] || [ "$ASSOCIATION" = "OWNER" ] || [ "$ASSOCIATION" = "COLLABORATOR" ]; then
+            echo "authorized=true" >> $GITHUB_OUTPUT
+          else
+            echo "authorized=false" >> $GITHUB_OUTPUT
+            echo "Unauthorized label application by $AUTHOR"
+          fi
+
+      - name: Checkout repository
+        if: steps.auth.outputs.authorized == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: steps.auth.outputs.authorized == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Append verified domain and rebuild
+        if: steps.auth.outputs.authorized == 'true'
+        run: |
+          BODY="${{ github.event.issue.body }}"
+          DOMAIN=$(node -e "
+            const b = process.env.ISSUE_BODY || '';
+            const m = b.match(/### Malicious Domain or URL\s+([^\r\n]+)/i);
+            const raw = m ? m[1].trim() : '';
+            const clean = raw.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].split(':')[0].trim();
+            console.log(clean);
+          ")
+
+          if [ -n "$DOMAIN" ] && [ "$DOMAIN" != "undefined" ]; then
+            mkdir -p sources
+            touch sources/custom.txt
+            if ! grep -q -x "$DOMAIN" sources/custom.txt; then
+              echo "$DOMAIN" >> sources/custom.txt
+            fi
+
+            npx --yes tsx src/build.ts
+
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add sources/custom.txt data/
+            git commit -m "chore(data): ingest verified domain from #${{ github.event.issue.number }} [skip ci]"
+            git push
+            echo "success=true" >> $GITHUB_ENV
+            echo "TARGET_DOMAIN=$DOMAIN" >> $GITHUB_ENV
+          fi
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+
+      - name: Close issue as completed
+        if: steps.auth.outputs.authorized == 'true' && env.success == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const domain = process.env.TARGET_DOMAIN;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `🚀 **Ingested**: \`${domain}\` has been compiled into the blocklist. Thank you for keeping the ecosystem safe!`
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              state: 'closed',
+              state_reason: 'completed'
+            });

@@ -191,7 +191,6 @@
 119.189.146.15
 119.192.128.163
 119.193.158.215
-119.206.216.132
 119.91.141.214
 120.193.219.210
 120.26.166.249
@@ -203,6 +202,7 @@
 120.79.64.164
 120.84.212.234
 120.84.213.44
+120.84.214.178
 120.84.214.210
 120.84.215.56
 121.1.138.245
@@ -234,10 +234,8 @@
 123.129.155.110
 123.129.7.76
 123.14.210.153
-123.14.233.91
 123.14.87.109
 123.143.141.75
-123.161.90.221
 123.170.101.120
 123.188.126.2
 123.189.133.36
@@ -292,7 +290,6 @@
 134.122.189.98
 134.249.141.119
 136.233.149.66
-138.122.43.76
 138.204.196.254
 138.219.58.34
 138.36.2.110
@@ -337,7 +334,6 @@
 154.126.186.59
 154.223.128.222
 154.23.0.6
-154.68.30.214
 154.73.64.24
 154.83.85.63
 154.84.212.18
@@ -359,7 +355,6 @@
 162.215.130.152
 162.215.218.82
 162.215.218.94
-163.142.77.44
 163.142.93.136
 164.126.129.225
 164.160.41.10
@@ -393,7 +388,6 @@
 175.147.243.123
 175.148.207.181
 175.149.142.240
-175.149.73.133
 175.151.226.239
 175.151.87.39
 175.165.74.103
@@ -495,6 +489,7 @@
 182.253.115.155
 182.253.115.156
 182.52.51.239
+182.72.167.124
 182.73.129.30
 182.92.99.95
 182.93.83.124
@@ -703,6 +698,7 @@
 213.33.204.186
 213.47.243.57
 213.5.194.56
+213.6.101.83
 213.6.196.230
 213.6.74.138
 213.64.230.238
@@ -758,6 +754,7 @@
 223.83.211.82
 22qq-client.com
 23.140.244.57
+23.160.56.123
 23.238.39.247
 23.94.145.112
 23.94.252.153
@@ -765,6 +762,7 @@
 24.191.64.49
 24.234.159.5
 24.37.71.230
+24.75.165.67
 26usdm.oss-cn-beijing.aliyuncs.com
 27.125.169.235
 27.147.225.2
@@ -837,7 +835,6 @@
 37.233.63.185
 37.252.66.188
 37.252.69.10
-37.28.177.69
 37.34.230.9
 37.57.33.51
 38.247.161.228
@@ -955,6 +952,7 @@
 47.76.159.198
 47.84.123.75
 47.89.173.214
+47.92.205.158
 49.204.232.47
 49.232.126.36
 4eclient.com
@@ -984,7 +982,6 @@
 59.110.9.189
 59.56.110.227
 59.96.139.185
-59.97.249.88
 60.17.117.178
 60.19.210.229
 60.19.240.242
@@ -1065,6 +1062,7 @@
 75.144.208.234
 76.130.209.104
 76.53.38.126
+76.76.195.174
 76.94.199.139
 77.171.119.16
 77.172.14.72
@@ -1085,7 +1083,6 @@
 78.38.123.220
 78.38.19.164
 79.1.229.42
-79.106.74.163
 79.124.8.44
 8.131.63.6
 8.138.96.41
@@ -1196,6 +1193,7 @@
 91.92.34.63
 91.92.43.221
 91.92.82.180
+92.118.39.62
 92.127.156.174
 92.150.82.148
 92.203.169.41
@@ -1275,7 +1273,6 @@ atkcgnew.evgeni7e.beget.tech
 attach.66rpg.com
 attach.mail.daum.net
 autohaus-bender.de
-automobile-bk.de
 aws-v2-cdn.token.im
 backupallfresh2030.com
 backupso.com
@@ -1355,7 +1352,6 @@ d3cciiowg5l3jx.cloudfront.net
 damiancollier.com
 data.yhydl.com
 dcrun.co.uk
-dcwblida.dz
 deagroup-ks.com
 debugify.net
 del.sou.pp.ua
@@ -1369,6 +1365,7 @@ disk.accord1key.cn
 dl.1003b.56a.com
 dl.360safe.com
 dl.dzqzd.com
+dl.ijinshan.com
 dl.natgo.cn
 dlied6.bytes.tcdnos.com
 dlied6.yz.tcdnos.com
@@ -1519,7 +1516,6 @@ konsor.ru
 krause-fahrzeuge.de
 kryptonclient-cracked.com
 kryptonclientcrack.lovable.app
-lahoreshoes.com
 lai-1451610695.cos.ap-guangzhou.myqcloud.com
 lawfirm.paperbirdtech.com
 lcportal.kbinsure.co.kr
@@ -1527,6 +1523,7 @@ leafdraft18.com
 leindisncieamrocea-1341831283.cos.sa-saopaulo.myqcloud.com
 lifeisabouthavingfun448.duckdns.org
 lindnerelektroanlagen.de
+loanoffer.co.in
 local-update.com
 lomejordesalamanca.es
 londonairportstransfer.co.uk
@@ -1538,9 +1535,9 @@ luminouspower.com.pk
 m.jkoa.co.kr
 m.meta-dm.com
 maidforyou1985.com
+main.lahoreshoes.com
 malupieng.com.br
 mamabearcoffee.com
-mandarin.net.au
 maple30.com
 marlowclient.com
 matthewsigmondv5.pages.dev
@@ -1589,7 +1586,6 @@ onfiltre.com.tr
 opsecmod.st
 orientedworld.com
 ossapp.suning.com
-out-agent.duckdns.org
 outexfashion.com
 outpost.co.ke
 oz-courses.com
@@ -1622,7 +1618,6 @@ project0.cc
 ps-ps.cc
 pub-0216fa08b2b94e129cb9e002cf7cb1f4.r2.dev
 pub-0478b308b8cf46709a73d0eed5afd633.r2.dev
-pub-0aa1ca9c603a4b99b4e4dd7636b31f10.r2.dev
 pub-1614932a526c40d79fe5bf23e71e3ff7.r2.dev
 pub-1900be17f2994b5580d602f23eb7fb93.r2.dev
 pub-1c4ef2a315ec4b89b9dfad9472afee69.r2.dev
@@ -1643,6 +1638,7 @@ r-tt.com
 rabbids.cc
 ramirex.ro
 raqmnh.com
+rathodsoftware.in
 razao.pt
 rcf.co.mz
 rdm.91yunma.cn
@@ -1700,7 +1696,6 @@ softbank126023203236.bbtec.net
 softdl.360tpcdn.com
 softdl2.360tpcdn.com
 softdl4.360.cn
-spgint.com
 srrealestate.techzonecam.com
 srsorvete.com.br
 ss-01.com
@@ -1713,6 +1708,7 @@ static.topxgun.com
 static.youdm.cn
 static.zongheng.com
 stdown.dinju.com
+stepupnetworks.com
 stonemart.pk
 streammobs.com
 studiogioeli.it
@@ -1741,7 +1737,6 @@ thehaider.com
 theholidayroads.com
 thementordirectory.com
 thesalons.in
-thetamarindleafresidency.com
 thisisafalsepositive.st
 tiacreation.club
 tiwanlinm.duckdns.org
