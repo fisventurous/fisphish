@@ -30,6 +30,36 @@ const SOURCES: SourceDef[] = [
   { name: 'URLhaus-Online', url: 'https://urlhaus.abuse.ch/downloads/text_online/', type: 'lines', defaultCategory: 'phishing-general' }
 ];
 
+export const SHARED_HOSTING_SUFFIXES = new Set<string>([
+  'pages.dev', 'workers.dev', 'vercel.app', 'netlify.app',
+  'web.app', 'firebaseapp.com', 'github.io', 'gitlab.io',
+  'onrender.com', 'render.com', 'glitch.me', 'replit.dev',
+  'replit.app', 'repl.co', 'ngrok-free.app', 'ngrok.io',
+  'ngrok.app', 'loca.lt', 'serveo.net', 'surge.sh',
+  'fly.dev', 'railway.app', 'deno.dev', '000webhostapp.com',
+  'pantheonsite.io', 'weebly.com', 'wixsite.com', 'blogspot.com'
+]);
+
+export function isDomainWhitelisted(domain: string, whitelist: Set<string>): boolean {
+  if (whitelist.has(domain)) return true;
+
+  const parts = domain.split('.');
+  for (let i = 1; i < parts.length - 1; i++) {
+    const parent = parts.slice(i).join('.');
+
+    // Shared hosting suffixes must not grant automatic wildcard immunity to scam subdomains
+    if (SHARED_HOSTING_SUFFIXES.has(parent)) {
+      continue;
+    }
+
+    if (whitelist.has(parent)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function categorizeDomain(domain: string, fallback = 'phishing-general'): string {
   const d = domain.toLowerCase();
   if (/(?:nitro|glft|nltro|discor|dlscord|d1scord|discrod|discoord|discort|discorb|discocl|discqd|dlscqd|disscord|free.*gift|boost|hypesquad)/i.test(d)) return 'discord-nitro';
@@ -40,33 +70,78 @@ export function categorizeDomain(domain: string, fallback = 'phishing-general'):
   return fallback;
 }
 
-export async function buildDataset(): Promise<void> {
-  const start = Date.now();
-  console.log('Fetching official domain whitelist...');
-  const officialRes = await fetch('https://raw.githubusercontent.com/Dogino/Discord-Phishing-URLs/main/official-domains.txt').catch(() => null);
-  const officialSet = new Set<string>([
-    'github.com', 'google.com', 'youtube.com', 'twitter.com', 'x.com',
-    'discord.com', 'discord.gg', 'discord.gift', 'discord.media', 'discord.co',
-    'discordapp.com', 'steamcommunity.com', 'steampowered.com', 'roblox.com',
-    'pollinations.ai', 'enter.pollinations.ai', 'pollinations.github.io',
-    'raw.githubusercontent.com', 'gist.github.com',
-    'ethereum.org', 'solana.com', 'bitcoin.org',
-    'uniswap.org', 'opensea.io', 'metamask.io', 'phantom.app',
-    'binance.com', 'coinbase.com', 'kraken.com',
-    'etherscan.io', 'solscan.io', 'bscscan.com',
-    'cloudflare.com', 'jsdelivr.net', 'github.io', 'gitlab.com',
-    'reddit.com', 'twitch.tv', 'spotify.com', 'medium.com'
-  ]);
+export async function fetchWhitelist(): Promise<Set<string>> {
+  const set = new Set<string>();
 
-  if (officialRes && officialRes.ok) {
-    const text = await officialRes.text();
-    for (const line of text.split('\n')) {
-      const clean = line.trim().toLowerCase();
-      if (clean && !clean.startsWith('//') && !clean.startsWith('#')) {
-        officialSet.add(clean);
+  // 1. Local sources/whitelist.txt
+  const localWhitelistPath = resolve(SOURCES_DIR, 'whitelist.txt');
+  if (existsSync(localWhitelistPath)) {
+    const lines = readFileSync(localWhitelistPath, 'utf8').split('\n');
+    for (const l of lines) {
+      const clean = l.trim().toLowerCase();
+      if (clean && !clean.startsWith('#') && !clean.startsWith('//')) {
+        set.add(clean);
       }
     }
   }
+
+  // 2. Dogino official-domains.txt
+  try {
+    const res = await fetch('https://raw.githubusercontent.com/Dogino/Discord-Phishing-URLs/main/official-domains.txt', { signal: AbortSignal.timeout(10000) });
+    if (res.ok) {
+      const text = await res.text();
+      for (const line of text.split('\n')) {
+        const clean = line.trim().toLowerCase();
+        if (clean && !clean.startsWith('#') && !clean.startsWith('//')) {
+          set.add(clean);
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch Dogino official domains:', err);
+  }
+
+  // 3. High-reputation Top 10k (Tranco with OpenDNS fallback)
+  try {
+    console.log('Fetching Tranco top ranking list...');
+    const metaRes = await fetch('https://tranco-list.eu/api/lists/date/latest', { signal: AbortSignal.timeout(8000) });
+    if (metaRes.ok) {
+      const meta = await metaRes.json() as { list_id?: string };
+      if (meta.list_id) {
+        const trancoRes = await fetch(`https://tranco-list.eu/download/${meta.list_id}/10000`, { signal: AbortSignal.timeout(15000) });
+        if (trancoRes.ok) {
+          const csv = await trancoRes.text();
+          for (const line of csv.split('\n')) {
+            const domain = line.split(',')[1]?.trim().toLowerCase();
+            if (domain && domain.includes('.')) set.add(domain);
+          }
+        }
+      }
+    }
+  } catch {
+    console.warn('Tranco API unavailable, trying OpenDNS Top-10k fallback...');
+    try {
+      const openDnsRes = await fetch('https://raw.githubusercontent.com/opendns/public-domain-lists/master/opendns-top-domains.txt', { signal: AbortSignal.timeout(10000) });
+      if (openDnsRes.ok) {
+        const text = await openDnsRes.text();
+        for (const line of text.split('\n')) {
+          const domain = line.trim().toLowerCase();
+          if (domain && domain.includes('.')) set.add(domain);
+        }
+      }
+    } catch {
+      console.warn('OpenDNS fallback also unavailable, using local baseline whitelist.');
+    }
+  }
+
+  return set;
+}
+
+export async function buildDataset(): Promise<void> {
+  const start = Date.now();
+  console.log('Compiling comprehensive multi-source whitelist...');
+  const officialSet = await fetchWhitelist();
+  console.log(`Whitelist populated with ${officialSet.size} high-reputation and official domains.`);
 
   const domainMap = new Map<string, string>();
 
@@ -110,18 +185,7 @@ export async function buildDataset(): Promise<void> {
 
         if (!d || !d.includes('.') || d.length > 120 || d.startsWith('.') || d.startsWith('#')) continue;
         if (!/^[a-z0-9][a-z0-9.-]*[a-z0-9]$/.test(d)) continue;
-
-        let isOfficial = officialSet.has(d);
-        if (!isOfficial) {
-          const parts = d.split('.');
-          for (let i = 1; i < parts.length - 1; i++) {
-            if (officialSet.has(parts.slice(i).join('.'))) {
-              isOfficial = true;
-              break;
-            }
-          }
-        }
-        if (isOfficial) continue;
+        if (isDomainWhitelisted(d, officialSet)) continue;
 
         const cat = categorizeDomain(d, source.defaultCategory ?? 'phishing-general');
         const existing = domainMap.get(d);
@@ -148,18 +212,7 @@ export async function buildDataset(): Promise<void> {
 
       if (!d || !d.includes('.') || d.length > 120 || d.startsWith('.') || d.startsWith('#')) continue;
       if (!/^[a-z0-9][a-z0-9.-]*[a-z0-9]$/.test(d)) continue;
-
-      let isOfficial = officialSet.has(d);
-      if (!isOfficial) {
-        const parts = d.split('.');
-        for (let i = 1; i < parts.length - 1; i++) {
-          if (officialSet.has(parts.slice(i).join('.'))) {
-            isOfficial = true;
-            break;
-          }
-        }
-      }
-      if (isOfficial) continue;
+      if (isDomainWhitelisted(d, officialSet)) continue;
 
       const cat = categorizeDomain(d, 'phishing-general');
       const existing = domainMap.get(d);

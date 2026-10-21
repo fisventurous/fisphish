@@ -1,0 +1,38 @@
+# fisphish trusted whitelist domains
+# one domain per line. lines starting with # are ignored.
+# domains here and their legitimate subdomains will never be blacklisted.
+
+pollinations.ai
+enter.pollinations.ai
+pollinations.github.io
+github.com
+raw.githubusercontent.com
+gist.github.com
+discord.com
+discord.gg
+discord.gift
+discord.media
+discordapp.com
+steamcommunity.com
+steampowered.com
+roblox.com
+ethereum.org
+solana.com
+bitcoin.org
+uniswap.org
+opensea.io
+metamask.io
+phantom.app
+binance.com
+coinbase.com
+kraken.com
+etherscan.io
+solscan.io
+bscscan.com
+cloudflare.com
+jsdelivr.net
+gitlab.com
+reddit.com
+twitch.tv
+spotify.com
+medium.com
