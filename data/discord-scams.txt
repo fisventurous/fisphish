@@ -3095,6 +3095,7 @@ cd-id.com
 cdc3918.asia
 cdn-auuth.workers.dev
 cdn-discordapp.co
+cdn-guild.com
 cdn-redirect.com
 cdn.dicsord.uk
 cdn.ymaws.com
