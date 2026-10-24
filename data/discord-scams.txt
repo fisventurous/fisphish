@@ -17,6 +17,7 @@
 0xboost.finance
 0xhoneyjar.org
 0xmons.net
+0xplaynetwork.xyz
 1-88y.pages.dev
 1-percents-club.com
 1-ravblox.tech
@@ -1979,6 +1980,7 @@ bobxcas.cfd
 boegux.com
 bogamb.at
 bogamb.cc
+bokuwex.com
 boliviateste-moderator.com
 bominex.com
 bon-hostel-zambia-completely.trycloudflare.com
@@ -16668,6 +16670,7 @@ lialav.github.io
 lib2.biz
 libopex.com
 libra-sale.io
+lidamex.com
 lido-boost.com
 lido-boost.net
 lido-finance.net
@@ -20384,6 +20387,7 @@ party-captcha.app
 party-supevents.cf
 pass-land.com
 pass-source2.com
+passionbox.top
 passport-gitcoin.com
 passport-gitcoin.org
 pastaghi-noable.blogspot.com
@@ -30723,6 +30727,7 @@ vctroad.com
 vctset.com
 vctvalo.com
 vctvalorant.com
+vdc-collab.land
 veafd.biz.id
 veahax.com
 vebowex.com

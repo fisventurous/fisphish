@@ -98348,6 +98348,7 @@ coinbase-account-safety.com
 coinbase-account-secure.com
 coinbase-account-verification.informatiabuzaului.ro
 coinbase-account.com
+coinbase-account49.dynamic-dns.net
 coinbase-accounts.com
 coinbase-activation.com
 coinbase-ai.com
@@ -98513,6 +98514,7 @@ coinbase-live-chat.com
 coinbase-livesupport.com
 coinbase-login-auth32.mefound.com
 coinbase-login-forgot-password.jkub.com
+coinbase-login-forgot-passwords.dynamic-dns.net
 coinbase-login-service-auth.my03.com
 coinbase-login.com
 coinbase-loginwallet.com
@@ -98584,6 +98586,7 @@ coinbase-reject.com
 coinbase-rejectlogin.com
 coinbase-remote.com
 coinbase-report.parliamentary.live
+coinbase-reportunsc.dynamic-dns.net
 coinbase-request.com
 coinbase-reset-password.com.ccda1683d8c9.xyz
 coinbase-reset.com
@@ -98611,6 +98614,7 @@ coinbase-securityusa.com
 coinbase-servapp.beenurajpootfilms.com
 coinbase-servicedesk.com
 coinbase-ses.live
+coinbase-sign-auth.dynamic-dns.net
 coinbase-slv.com
 coinbase-smartwallet.com
 coinbase-special.top
@@ -98813,6 +98817,7 @@ coinbase.yt
 coinbase.zip
 coinbase.zlue.live
 coinbase03.com
+coinbase0verify.dynamic-dns.net
 coinbase1.com
 coinbase1.monthly-giveaways.com
 coinbase12.top
@@ -208612,6 +208617,7 @@ login-blockgames.com
 login-bltso.com
 login-cdn.com
 login-cf.icu
+login-coinbase-com-sign-login-services.dynamic-dns.net
 login-coinbase-secure.my03.com
 login-coinbase-security.com
 login-coinbase-sighn-auths94.x24hr.com

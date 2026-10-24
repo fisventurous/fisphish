@@ -719,6 +719,7 @@
 0xpaulypepe.com
 0xpendle.xyz
 0xpika.xyz
+0xplaynetwork.xyz
 0xpoiygon.com
 0xpolygon.org
 0xpolygon.technology
@@ -68939,6 +68940,7 @@ boknmas.com
 bokuclub.com
 bokunft-free.xyz
 bokunft1-free.xyz
+bokuwex.com
 bol.mxmfk.club
 boldacq.com
 boldape.world
@@ -104070,6 +104072,7 @@ coinbase-account-safety.com
 coinbase-account-secure.com
 coinbase-account-verification.informatiabuzaului.ro
 coinbase-account.com
+coinbase-account49.dynamic-dns.net
 coinbase-accounts.com
 coinbase-activation.com
 coinbase-ai.com
@@ -104235,6 +104238,7 @@ coinbase-live-chat.com
 coinbase-livesupport.com
 coinbase-login-auth32.mefound.com
 coinbase-login-forgot-password.jkub.com
+coinbase-login-forgot-passwords.dynamic-dns.net
 coinbase-login-service-auth.my03.com
 coinbase-login.com
 coinbase-loginwallet.com
@@ -104306,6 +104310,7 @@ coinbase-reject.com
 coinbase-rejectlogin.com
 coinbase-remote.com
 coinbase-report.parliamentary.live
+coinbase-reportunsc.dynamic-dns.net
 coinbase-request.com
 coinbase-reset-password.com.ccda1683d8c9.xyz
 coinbase-reset.com
@@ -104333,6 +104338,7 @@ coinbase-securityusa.com
 coinbase-servapp.beenurajpootfilms.com
 coinbase-servicedesk.com
 coinbase-ses.live
+coinbase-sign-auth.dynamic-dns.net
 coinbase-slv.com
 coinbase-smartwallet.com
 coinbase-special.top
@@ -104535,6 +104541,7 @@ coinbase.yt
 coinbase.zip
 coinbase.zlue.live
 coinbase03.com
+coinbase0verify.dynamic-dns.net
 coinbase1.com
 coinbase1.monthly-giveaways.com
 coinbase12.top
@@ -224562,6 +224569,7 @@ lid0.vercel.app
 lid0dmaker.com
 lid0pro.online
 lidafi.link
+lidamex.com
 liddo.online
 liddrewards.sbs
 lide-finance.com
@@ -229765,6 +229773,7 @@ login-bughunting.com
 login-captchabot.com
 login-cdn.com
 login-cf.icu
+login-coinbase-com-sign-login-services.dynamic-dns.net
 login-coinbase-secure.my03.com
 login-coinbase-security.com
 login-coinbase-sighn-auths94.x24hr.com
@@ -232485,6 +232494,7 @@ lux-gg.com
 lux-spin.top
 lux-watches.net
 lux-watches.sbs
+lux-win.com
 lux-wm.com
 lux3.fmint.live
 lux3club.luckymint.online
@@ -294968,6 +294978,7 @@ passes.pro
 passes.top
 passfix.site
 passion-web3.com
+passionbox.top
 passive-income.online
 passivecashflow.co
 passmdvmm.xyz
@@ -423573,6 +423584,7 @@ vdapps-protocol.pages.dev
 vdb7.cc
 vdblke.xyz
 vdbxrewards.store
+vdc-collab.land
 vdeck.app
 vdeckcall.com
 vdeckcall.org
@@ -454052,6 +454064,7 @@ zenanow.live
 zenape.io
 zenapes.pro
 zenawex.com
+zenawin.com
 zenbot.link
 zenbridge.online
 zenchain-mainnet.com
