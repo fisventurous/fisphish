@@ -434,6 +434,7 @@ roblox.hk.com
 roblox.ht
 roblox.icu
 roblox.ink
+roblox.je
 roblox.jpn.com
 roblox.ke
 roblox.kg

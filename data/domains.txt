@@ -340593,6 +340593,7 @@ roblox.hk.com
 roblox.ht
 roblox.icu
 roblox.ink
+roblox.je
 roblox.jpn.com
 roblox.ke
 roblox.kg
@@ -422782,6 +422783,7 @@ valomm.com
 valomot.fun
 valomyst.click
 valonate.com
+valoned.pro
 valones.cc
 valonex.top
 valonr.top
