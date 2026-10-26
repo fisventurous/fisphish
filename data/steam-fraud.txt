@@ -2900,6 +2900,7 @@ steamcommunity.pro
 steamcommunity.pw
 steamcommunity.rest
 steamcommunity.ru
+steamcommunity.ru.net
 steamcommunity.servehttp.com
 steamcommunity.shop
 steamcommunity.site
