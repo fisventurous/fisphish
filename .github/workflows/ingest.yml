@@ -2,7 +2,7 @@ name: Ingest Domain Submission
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [opened, edited, reopened, labeled]
 
 concurrency:
   group: ingest-${{ github.event.issue.number }}
@@ -10,171 +10,222 @@ concurrency:
 
 jobs:
   validate-submission:
-    if: github.event.action == 'opened'
-    runs-on: ubuntu-latest
+    if: github.event.action != 'labeled' && github.event.issue.state == 'open'
+    runs-on: ubuntu-24.04
     permissions:
+      contents: read
       issues: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Validate domain submission
         uses: actions/github-script@v7
         with:
           script: |
-            const body = context.payload.issue.body || '';
-            const match = body.match(/### Malicious Domain or URL\s+([^\r\n]+)/i);
-            const rawDomain = match ? match[1].trim() : '';
+            const { isProtectedDomain, parseDomainSubmission } = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/domain-submission.cjs`);
+            const issueNumber = context.payload.issue.number;
+            const labels = context.payload.issue.labels ?? [];
 
-            const clean = rawDomain.toLowerCase()
-              .replace(/^https?:\/\//, '')
-              .replace(/^www\./, '')
-              .split('/')[0]
-              .split(':')[0]
-              .trim();
+            if (context.payload.action !== 'opened' && labels.some(label => label.name === 'approved')) {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                name: 'approved'
+              });
+            }
 
-            const isValid = /^[a-z0-9][a-z0-9.-]*[a-z0-9]$/.test(clean) && clean.includes('.');
-            if (!isValid) {
+            const domain = parseDomainSubmission(context.payload.issue.body);
+            const reject = async message => {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                body: `❌ **Submission Rejected**: \`${rawDomain}\` is not a valid domain format.`
+                issue_number: issueNumber,
+                body: message
               });
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
+                issue_number: issueNumber,
                 state: 'closed',
                 state_reason: 'not_planned'
               });
+            };
+
+            if (!domain) {
+              await reject('Submission rejected. Please use the report form and provide a valid domain and threat category.');
               return;
             }
 
-            const fs = require('fs');
-            const domainsTxt = fs.readFileSync('data/domains.txt', 'utf8');
-            if (domainsTxt.includes('\n' + clean + '\n') || domainsTxt.startsWith(clean + '\n')) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                body: `ℹ️ **Duplicate**: \`${clean}\` is already present in the blocklist.`
-              });
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                state: 'closed',
-                state_reason: 'not_planned'
-              });
+            if (isProtectedDomain(domain)) {
+              await reject('Submission rejected because the domain matches protected infrastructure.');
               return;
             }
 
-            const protectedHosts = [
-              'github.com', 'google.com', 'youtube.com', 'twitter.com', 'x.com',
-              'discord.com', 'discord.gg', 'steamcommunity.com', 'pollinations.ai',
-              'cloudflare.com', 'microsoft.com', 'apple.com', 'amazon.com', 'vercel.app'
-            ];
+            const fs = require('node:fs');
+            const dataDomains = fs.readFileSync('data/domains.txt', 'utf8').split(/\r?\n/);
+            const customDomains = fs.existsSync('sources/custom.txt')
+              ? fs.readFileSync('sources/custom.txt', 'utf8').split(/\r?\n/)
+              : [];
 
-            const isProtected = protectedHosts.some(h => clean === h || clean.endsWith('.' + h));
-            if (isProtected) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                body: `🛡️ **Whitelisted**: \`${clean}\` is an official or protected platform and cannot be blacklisted.`
-              });
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                state: 'closed',
-                state_reason: 'not_planned'
-              });
+            if (dataDomains.includes(domain) || customDomains.includes(domain)) {
+              await reject('Submission rejected because the domain is already recorded.');
               return;
+            }
+
+            if (context.payload.action !== 'opened') {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: ['needs-review']
+              });
             }
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.payload.issue.number,
-              body: `✅ **Automated pre-checks passed** for \`${clean}\`.\n\nMaintainers can review and apply the \`approved\` label to ingest this into the live dataset.`
+              issue_number: issueNumber,
+              body: 'Automated pre-checks passed. A maintainer must review the report before ingestion.'
             });
 
   ingest-approved:
-    if: github.event.action == 'labeled' && github.event.label.name == 'approved'
-    runs-on: ubuntu-latest
+    if: github.event.action == 'labeled' && github.event.label.name == 'approved' && github.event.sender.login == 'fisventurous'
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       issues: write
 
     steps:
-      - name: Verify maintainer authorization
-        id: auth
-        run: |
-          AUTHOR="${{ github.event.sender.login }}"
-          ASSOCIATION="${{ github.event.issue.author_association }}"
-          if [ "$AUTHOR" = "fisventurous" ] || [ "$ASSOCIATION" = "OWNER" ] || [ "$ASSOCIATION" = "COLLABORATOR" ]; then
-            echo "authorized=true" >> $GITHUB_OUTPUT
-          else
-            echo "authorized=false" >> $GITHUB_OUTPUT
-            echo "Unauthorized label application by $AUTHOR"
-          fi
-
       - name: Checkout repository
-        if: steps.auth.outputs.authorized == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        if: steps.auth.outputs.authorized == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
-      - name: Append verified domain and rebuild
-        if: steps.auth.outputs.authorized == 'true'
-        run: |
-          BODY="${{ github.event.issue.body }}"
-          DOMAIN=$(node -e "
-            const b = process.env.ISSUE_BODY || '';
-            const m = b.match(/### Malicious Domain or URL\s+([^\r\n]+)/i);
-            const raw = m ? m[1].trim() : '';
-            const clean = raw.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].split(':')[0].trim();
-            console.log(clean);
-          ")
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
 
-          if [ -n "$DOMAIN" ] && [ "$DOMAIN" != "undefined" ]; then
-            mkdir -p sources
-            touch sources/custom.txt
-            if ! grep -q -x "$DOMAIN" sources/custom.txt; then
-              echo "$DOMAIN" >> sources/custom.txt
-            fi
-
-            npx --yes tsx src/build.ts
-
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add sources/custom.txt data/
-            git commit -m "chore(data): ingest verified domain from #${{ github.event.issue.number }} [skip ci]"
-            git push
-            echo "success=true" >> $GITHUB_ENV
-            echo "TARGET_DOMAIN=$DOMAIN" >> $GITHUB_ENV
-          fi
-        env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
-
-      - name: Close issue as completed
-        if: steps.auth.outputs.authorized == 'true' && env.success == 'true'
+      - name: Revalidate approved submission
+        id: validate
         uses: actions/github-script@v7
         with:
           script: |
-            const domain = process.env.TARGET_DOMAIN;
+            const { isProtectedDomain, parseDomainSubmission } = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/domain-submission.cjs`);
+            const issueNumber = context.payload.issue.number;
+            const reject = async message => {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                name: 'approved'
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: message
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+            };
+
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
+            if (issue.state !== 'open' || !issue.labels.some(label => label.name === 'approved')) return;
+
+            const domain = parseDomainSubmission(issue.body);
+            if (!domain) {
+              await reject('Ingestion stopped because the current submission is invalid.');
+              return;
+            }
+
+            if (isProtectedDomain(domain)) {
+              await reject('Ingestion stopped because the domain matches protected infrastructure.');
+              return;
+            }
+
+            const fs = require('node:fs');
+            const dataDomains = fs.readFileSync('data/domains.txt', 'utf8').split(/\r?\n/);
+            const customDomains = fs.existsSync('sources/custom.txt')
+              ? fs.readFileSync('sources/custom.txt', 'utf8').split(/\r?\n/)
+              : [];
+
+            if (dataDomains.includes(domain) || customDomains.includes(domain)) {
+              await reject('Ingestion stopped because the domain is already recorded.');
+              return;
+            }
+
+            core.setOutput('domain', domain);
+
+      - name: Append domain and rebuild datasets
+        if: steps.validate.outputs.domain != ''
+        env:
+          DOMAIN: ${{ steps.validate.outputs.domain }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const domain = process.env.DOMAIN;
+          if (!domain || !/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(domain)) process.exit(1);
+          const path = 'sources/custom.txt';
+          const current = fs.existsSync(path) ? fs.readFileSync(path, 'utf8') : '';
+          const separator = current && !current.endsWith('\n') ? '\n' : '';
+          fs.appendFileSync(path, `${separator}${domain}\n`);
+          NODE
+          npm run build
+          node -e 'const fs = require("node:fs"); const domain = process.env.DOMAIN; const entries = fs.readFileSync("data/domains.txt", "utf8").split(/\r?\n/); if (!entries.includes(domain)) { console.error("The compiler excluded the submitted domain."); process.exit(1); }'
+
+      - name: Confirm report remains approved
+        if: steps.validate.outputs.domain != ''
+        uses: actions/github-script@v7
+        env:
+          DOMAIN: ${{ steps.validate.outputs.domain }}
+        with:
+          script: |
+            const { parseDomainSubmission } = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/domain-submission.cjs`);
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number
+            });
+            const approved = issue.labels.some(label => label.name === 'approved');
+            if (issue.state !== 'open' || !approved || parseDomainSubmission(issue.body) !== process.env.DOMAIN) {
+              core.setFailed('The report or its approval changed during ingestion.');
+            }
+
+      - name: Commit and push verified dataset
+        if: steps.validate.outputs.domain != ''
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sources/custom.txt data/
+          git commit -m "chore(data): ingest verified domain from #${ISSUE_NUMBER} [skip ci]"
+          git push
+
+      - name: Close issue as completed
+        if: steps.validate.outputs.domain != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.issue.number,
-              body: `🚀 **Ingested**: \`${domain}\` has been compiled into the blocklist. Thank you for keeping the ecosystem safe!`
+              body: 'The reviewed domain has been compiled into the blocklist.'
             });
             await github.rest.issues.update({
               owner: context.repo.owner,
