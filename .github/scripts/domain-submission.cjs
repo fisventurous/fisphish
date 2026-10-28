@@ -14,16 +14,8 @@ const PROTECTED_HOSTS = new Set([
   'cloudflare.com', 'microsoft.com', 'apple.com', 'amazon.com', 'vercel.app'
 ]);
 
-function parseDomainSubmission(body) {
-  const text = String(body ?? '');
-  const domainMatch = text.match(/(?:^|\r?\n)### Malicious Domain or URL\r?\n([^\r\n]*)/i);
-  const categoryMatch = text.match(/(?:^|\r?\n)### Threat Category\r?\n([^\r\n]*)/i);
-  const raw = domainMatch?.[1]?.trim();
-  const category = categoryMatch?.[1]?.trim();
-
-  if (!raw || !CATEGORIES.has(category)) return null;
-  if (/^[a-z][a-z\d+.-]*:/i.test(raw) && !/^https?:\/\//i.test(raw)) return null;
-
+function parseDomain(raw) {
+  if (!raw || /^[a-z][a-z\d+.-]*:/i.test(raw) && !/^https?:\/\//i.test(raw)) return null;
   let host;
   try {
     const url = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
@@ -40,6 +32,21 @@ function parseDomainSubmission(body) {
   ))) return null;
 
   return host;
+}
+
+function parseDomainSubmission(body) {
+  const text = String(body ?? '');
+  const domainMatch = text.match(/(?:^|\r?\n)### Malicious Domain or URL\r?\n([\s\S]*?)(?=\r?\n### |$)/i);
+  const categoryMatch = text.match(/(?:^|\r?\n)### Threat Category\r?\n([^\r\n]*)/i);
+  const rawDomains = domainMatch?.[1].split(/\r?\n/).map(value => value.trim()).filter(Boolean);
+  const category = categoryMatch?.[1]?.trim();
+
+  if (!rawDomains?.length || rawDomains.length > 20 || !CATEGORIES.has(category)) return null;
+
+  const domains = rawDomains.map(parseDomain);
+  if (domains.some(domain => !domain) || new Set(domains).size !== domains.length) return null;
+
+  return { domains, category };
 }
 
 function isProtectedDomain(domain) {

@@ -37,7 +37,7 @@ jobs:
               });
             }
 
-            const domain = parseDomainSubmission(context.payload.issue.body);
+            const submission = parseDomainSubmission(context.payload.issue.body);
             const reject = async message => {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -54,24 +54,27 @@ jobs:
               });
             };
 
-            if (!domain) {
-              await reject('Submission rejected. Please use the report form and provide a valid domain and threat category.');
+            if (!submission) {
+              await reject('Submission rejected. Use the report form to provide 1–20 valid domains or URLs, one per line, with a threat category.');
               return;
             }
 
-            if (isProtectedDomain(domain)) {
-              await reject('Submission rejected because the domain matches protected infrastructure.');
+            const protectedDomains = submission.domains.filter(isProtectedDomain);
+            if (protectedDomains.length) {
+              await reject(`Submission rejected because these entries match protected infrastructure: ${protectedDomains.join(', ')}`);
               return;
             }
 
             const fs = require('node:fs');
-            const dataDomains = fs.readFileSync('data/domains.txt', 'utf8').split(/\r?\n/);
+            const recordedDomains = new Set(fs.readFileSync('data/domains.txt', 'utf8').split(/\r?\n/));
             const customDomains = fs.existsSync('sources/custom.txt')
               ? fs.readFileSync('sources/custom.txt', 'utf8').split(/\r?\n/)
               : [];
+            for (const domain of customDomains) recordedDomains.add(domain);
+            const existingDomains = submission.domains.filter(domain => recordedDomains.has(domain));
 
-            if (dataDomains.includes(domain) || customDomains.includes(domain)) {
-              await reject('Submission rejected because the domain is already recorded.');
+            if (existingDomains.length) {
+              await reject(`Submission rejected because these entries are already recorded: ${existingDomains.join(', ')}`);
               return;
             }
 
@@ -88,7 +91,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
-              body: 'Automated pre-checks passed. A maintainer must review the report before ingestion.'
+              body: `Automated pre-checks passed for all ${submission.domains.length} entries:\n\n${submission.domains.map(domain => `- \`${domain}\``).join('\n')}\n\nCategory: ${submission.category}\n\nA maintainer must review the entire batch before ingestion.`
             });
 
   ingest-approved:
@@ -146,52 +149,56 @@ jobs:
             });
             if (issue.state !== 'open' || !issue.labels.some(label => label.name === 'approved')) return;
 
-            const domain = parseDomainSubmission(issue.body);
-            if (!domain) {
-              await reject('Ingestion stopped because the current submission is invalid.');
+            const submission = parseDomainSubmission(issue.body);
+            if (!submission) {
+              await reject('Ingestion stopped because the current batch is invalid.');
               return;
             }
 
-            if (isProtectedDomain(domain)) {
-              await reject('Ingestion stopped because the domain matches protected infrastructure.');
+            const protectedDomains = submission.domains.filter(isProtectedDomain);
+            if (protectedDomains.length) {
+              await reject(`Ingestion stopped because these entries match protected infrastructure: ${protectedDomains.join(', ')}`);
               return;
             }
 
             const fs = require('node:fs');
-            const dataDomains = fs.readFileSync('data/domains.txt', 'utf8').split(/\r?\n/);
+            const recordedDomains = new Set(fs.readFileSync('data/domains.txt', 'utf8').split(/\r?\n/));
             const customDomains = fs.existsSync('sources/custom.txt')
               ? fs.readFileSync('sources/custom.txt', 'utf8').split(/\r?\n/)
               : [];
+            for (const domain of customDomains) recordedDomains.add(domain);
+            const existingDomains = submission.domains.filter(domain => recordedDomains.has(domain));
 
-            if (dataDomains.includes(domain) || customDomains.includes(domain)) {
-              await reject('Ingestion stopped because the domain is already recorded.');
+            if (existingDomains.length) {
+              await reject(`Ingestion stopped because these entries are already recorded: ${existingDomains.join(', ')}`);
               return;
             }
 
-            core.setOutput('domain', domain);
+            core.setOutput('submission', JSON.stringify(submission));
 
       - name: Append domain and rebuild datasets
-        if: steps.validate.outputs.domain != ''
+        if: steps.validate.outputs.submission != ''
         env:
-          DOMAIN: ${{ steps.validate.outputs.domain }}
+          SUBMISSION_JSON: ${{ steps.validate.outputs.submission }}
         run: |
           node <<'NODE'
           const fs = require('node:fs');
-          const domain = process.env.DOMAIN;
-          if (!domain || !/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(domain)) process.exit(1);
+          const submission = JSON.parse(process.env.SUBMISSION_JSON);
+          const domains = submission.domains;
+          if (!Array.isArray(domains) || domains.length < 1 || domains.length > 20 || domains.some(domain => !/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(domain))) process.exit(1);
           const path = 'sources/custom.txt';
           const current = fs.existsSync(path) ? fs.readFileSync(path, 'utf8') : '';
           const separator = current && !current.endsWith('\n') ? '\n' : '';
-          fs.appendFileSync(path, `${separator}${domain}\n`);
+          fs.appendFileSync(path, `${separator}${domains.join('\n')}\n`);
           NODE
           npm run build
-          node -e 'const fs = require("node:fs"); const domain = process.env.DOMAIN; const entries = fs.readFileSync("data/domains.txt", "utf8").split(/\r?\n/); if (!entries.includes(domain)) { console.error("The compiler excluded the submitted domain."); process.exit(1); }'
+          node -e 'const fs = require("node:fs"); const domains = JSON.parse(process.env.SUBMISSION_JSON).domains; const entries = new Set(fs.readFileSync("data/domains.txt", "utf8").split(/\r?\n/)); const missing = domains.filter(domain => !entries.has(domain)); if (missing.length) { console.error(`The compiler excluded submitted entries: ${missing.join(", ")}`); process.exit(1); }'
 
       - name: Confirm report remains approved
-        if: steps.validate.outputs.domain != ''
+        if: steps.validate.outputs.submission != ''
         uses: actions/github-script@v7
         env:
-          DOMAIN: ${{ steps.validate.outputs.domain }}
+          SUBMISSION_JSON: ${{ steps.validate.outputs.submission }}
         with:
           script: |
             const { parseDomainSubmission } = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/domain-submission.cjs`);
@@ -201,12 +208,13 @@ jobs:
               issue_number: context.payload.issue.number
             });
             const approved = issue.labels.some(label => label.name === 'approved');
-            if (issue.state !== 'open' || !approved || parseDomainSubmission(issue.body) !== process.env.DOMAIN) {
+            const currentSubmission = parseDomainSubmission(issue.body);
+            if (issue.state !== 'open' || !approved || JSON.stringify(currentSubmission) !== process.env.SUBMISSION_JSON) {
               core.setFailed('The report or its approval changed during ingestion.');
             }
 
       - name: Commit and push verified dataset
-        if: steps.validate.outputs.domain != ''
+        if: steps.validate.outputs.submission != ''
         env:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
@@ -217,7 +225,7 @@ jobs:
           git push
 
       - name: Close issue as completed
-        if: steps.validate.outputs.domain != ''
+        if: steps.validate.outputs.submission != ''
         uses: actions/github-script@v7
         with:
           script: |

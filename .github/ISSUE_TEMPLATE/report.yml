@@ -6,13 +6,15 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting. Submissions are automatically validated against whitelist protection and duplicate filters before review.
-  - type: input
+        Thank you for reporting. Enter up to 20 domains or URLs, one per line. Keep the same threat category for the whole batch. Every entry is checked before the batch is sent for review.
+  - type: textarea
     id: domain
     attributes:
-      label: Malicious Domain or URL
-      description: The exact domain or link (e.g. `scam-discord-nitro.xyz` or `https://wallet-drainer.click/claim`).
-      placeholder: example.com
+      label: Malicious Domains or URLs
+      description: One domain or URL per line. Up to 20 unique entries. Do not include comments or separators.
+      placeholder: |
+        scam-discord-nitro.xyz
+        https://wallet-drainer.click/claim
     validations:
       required: true
   - type: dropdown
