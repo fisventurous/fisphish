@@ -1970,7 +1970,6 @@ metawin.su
 metawin.team
 metawin.to
 metawin.vercel.app
-metawin.zapto.org
 metawincasino.online
 metawiner.com
 metawiner.xyz
