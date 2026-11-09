@@ -318,6 +318,7 @@ roblox-urlshare.com
 roblox-us.com
 roblox-userprofile.com
 roblox-users.com
+roblox-uv.com
 roblox-v.com
 roblox-verification.com
 roblox-w.com
