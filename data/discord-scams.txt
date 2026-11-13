@@ -10495,6 +10495,7 @@ dsw-tools.gq
 dswcordgft.xyz
 dsxcordglft.xyz
 dtercordapp.com
+dts-collab.land
 dtscord.com
 duadex.com
 dubai-global-village.com
@@ -10513,6 +10514,7 @@ dupont-community-credit-union.sitey.me
 duscord.com
 duscord.ga
 duscord.xyz
+dustprotect.one
 duvegamb.com
 duxxkkkk.repl.co
 dvwastt.com
@@ -10833,6 +10835,7 @@ eautogielda-polanski.pl
 ebitxos.com
 ebitxs.com
 eblox.fun
+eboost.help
 ebrawl.org
 echallengersez.pro
 echallengerz.net
@@ -15231,6 +15234,7 @@ incentives-pyth.network
 incorphishor.com
 indexcaptchabot.info
 indocas.icu
+infini.fi-boost.icu
 infinite-wonderbox13.vercel.app
 infinite-wonderbox14.vercel.app
 infinite-wonderbox15.vercel.app
@@ -20440,6 +20444,7 @@ passport-gitcoin.org
 pastaghi-noable.blogspot.com
 pastamalicious.com
 pathofexile.site
+pautux.com
 paxos-auth.com
 paxosbot.net
 paxoscaptcha.com
@@ -31576,6 +31581,7 @@ wld-worldcoin.org
 wn.nr
 wnewton209.github.io
 woamax.com
+woarax.com
 woblox.fun
 wogamb.cc
 woihux.com
