@@ -1694,6 +1694,7 @@ kix.casino
 klarnacasino.nl
 klondaika.casino
 kogwin.com
+kolewin.com
 kometa-casino-amr.buzz
 kometa-casino-official.buzz
 kometa-casino-ru.buzz
@@ -2180,6 +2181,7 @@ nodedapps-inqubeta.pages.dev
 nodedapps-tgcasino.pages.dev
 nodsherbetfil.netlify.app
 nogwin.com
+nokawin.com
 nolawin.com
 northcasino-bdl.pages.dev
 noswin.com
@@ -2197,6 +2199,7 @@ notspin.io
 notspin.one
 notspinnyton.buzz
 novibet777app.com
+novspin.com
 nowbet.casino
 nowinv.sbs
 nozawin.com
