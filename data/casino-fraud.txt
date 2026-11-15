@@ -722,6 +722,7 @@ bnbit.win
 bnet-api.playm8ru.win
 bnet.playm8ru.win
 bobhash.win
+boilwin.com
 boluwin.com
 bomawin.com
 boneswin.com
@@ -1103,6 +1104,7 @@ doge.miners.bet
 dogspin.icu
 dogspins.cc
 dogsspin.xyz
+dogswin.com
 dojowin.com
 dokiwin.com
 dolphin-bet.com
