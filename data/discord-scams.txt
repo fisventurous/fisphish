@@ -2906,6 +2906,7 @@ captcharesolving-universe.com
 captchas-bot.com
 captchas-bot.info
 captchas-servers.site
+captchas-wickbot.info
 captchas.ac
 captchas.app
 captchas.blog
@@ -3294,6 +3295,7 @@ churchward-objectiv.000webhostapp.com
 cigamb.cc
 circle-usdc.live
 cirleci.net
+citgamb.com
 citydao.live
 citz.pro
 civaplays.com
@@ -12537,6 +12539,7 @@ foubex.com
 foundation-github.com
 foundation5-service.cc
 foundationpolygon.com
+foutox.com
 fov-loginsupevents.ml
 fowephwo.ru
 foxechange.com
@@ -16439,6 +16442,7 @@ kukyuk.000webhostapp.com
 kuminaluna.xyz
 kunai-valorant.com
 kunaio.vip
+kuokux.com
 kupikod.xyz
 kurumi-chan.xyz
 kurumiai.xyz
@@ -17458,6 +17462,7 @@ me-discord.com
 me-e6.com
 me-e6.xyz
 me-mee6.xyz
+meabux.com
 meakux.com
 mealdealfortwo.info
 meamox.com
@@ -21371,6 +21376,7 @@ ranks-hypixel.gift
 rao-ees.ru
 raobloox.com
 raowox.com
+raozox.com
 rapidantivirus.com
 rapiddownloads.eu
 rare-token.org
@@ -22548,6 +22554,7 @@ router-nitro.pages.dev
 routernitro.io
 routernitro.net
 routernitro.org
+rouzux.com
 rov-er.com
 rovault.com
 rovault.tech
@@ -31640,6 +31647,7 @@ workshopcommunityratedevs.com
 workshopcommunityratemods.com
 workshopcommunityrating.com
 workshopcommunityresub.com
+workshopcommunityreviewmods.com
 workshopcommunityreviews.com
 workshopcommunityrevote.com
 workshopcommunityrewards.com
@@ -31735,6 +31743,7 @@ wubingdu.cn
 wugamb.gl
 wulvies.com
 wulvies.xyz
+wuodax.com
 wuosux.com
 wuovox.com
 wurowex.com
